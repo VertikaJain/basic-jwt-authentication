@@ -23,4 +23,20 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// Login for an existing user
+app.post("/users/login", async (req, res) => {
+  const user = users.find((user) => user.username === req.body.username);
+  if (user === null) res.status(400).send("User not Found");
+  try {
+    const isUserAunthenticated = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (isUserAunthenticated) res.send("Able to Login");
+    else res.send("Unable to Login");
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
 app.listen(3000);
